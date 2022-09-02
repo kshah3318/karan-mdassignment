@@ -6,7 +6,7 @@ function book_store_register_post_types() {
 	
 	// Create Custom Post Type For Book
 	$labels = array(
-				    'name'				=> __('Books', 'bkstore'),
+				    'name'				=> __('Books', '	'),
 				    'singular_name' 	=> __('Book', 'bkstore'),
 				    'add_new' 			=> __('Add New', 'bkstore'),
 				    'add_new_item' 		=> __('Add New Book', 'bkstore'),
@@ -76,7 +76,7 @@ function book_store_register_post_types() {
 
 		"labels" 			=> $author_labels,
 		"singular_label" 	=> "Author",
-		'hierarchical'      => false,
+		'hierarchical'      => true,
         'public'            => true,
         'show_ui'           => true,
         'show_admin_column' => true,
@@ -90,7 +90,7 @@ function book_store_register_post_types() {
 
 		"labels" 			=> $publisher_labels,
 		"singular_label" 	=> "Publisher",
-		'hierarchical'      => false,
+		'hierarchical'      => true,
         'public'            => true,
         'show_ui'           => true,
         'show_admin_column' => true,
