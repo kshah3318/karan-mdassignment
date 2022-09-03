@@ -40,10 +40,13 @@ class Book_Store_Scripts {
 
 	public function book_store_public_scripts(){
 
+		wp_register_style('book-store-public-style', BOOK_STORE_INC_URL . '/css/book-store-public-style.css');
+		wp_enqueue_style('book-store-public-style');
+
 		wp_register_style('book-bootstrap-style', BOOK_STORE_INC_URL . '/css/bootstrap.min.css');
 		wp_enqueue_style('book-bootstrap-style');
 
-		
+		wp_enqueue_script('book-store-public-script', BOOK_STORE_INC_URL . '/js/book-store-public-script.js',array('jquery'));
 		wp_enqueue_script('book-bootstrap-script', BOOK_STORE_INC_URL . '/js/bootstrap.min.js');
 	}
 	

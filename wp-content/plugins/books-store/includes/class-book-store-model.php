@@ -123,6 +123,7 @@ class Book_Store_Model {
 					<label for="book_price" class="form-label"><?php echo esc_html('Price:','bkstore') ?></label>
 					<span class="font-weight-bold purple-text mr-2 mt-1">0</span>
 						<input type="range" class="form-range w-50" step="100" min="0" max="3000" id="book_price">
+						<input type="hidden" id="selected_book_price" value/>
 					<span class="font-weight-bold purple-text ml-2 mt-1">3000</span>		
 				</div>
 				<div class="col-12 text-center">
@@ -159,10 +160,11 @@ class Book_Store_Model {
 				</tr>
 				<tr>
 				<th scope="row">3</th>
-				<td colspan="2">Larry the Bird</td>
-				<td>@twitter</td>
-				<td>@twitter</td>
-				<td>@twitter</td>
+				<td>Jacob</td>
+				<td>Thornton</td>
+				<td>@fat</td>
+				<td>@fat</td>
+				<td>@fat</td>
 				</tr>
 			</tbody>
 			</table>
