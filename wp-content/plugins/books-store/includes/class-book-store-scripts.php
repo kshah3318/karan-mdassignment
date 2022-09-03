@@ -28,6 +28,23 @@ class Book_Store_Scripts {
 	 */
 	public function book_store_admin_scripts(){
 	
+	
+	}
+
+	/**
+	 * Enqueue Scripts and Styles on Public Function
+	 * 
+	 * @package Books Store
+	 * @since 1.0.0
+	*/
+
+	public function book_store_public_scripts(){
+
+		wp_register_style('book-bootstrap-style', BOOK_STORE_INC_URL . '/css/bootstrap.min.css');
+		wp_enqueue_style('book-bootstrap-style');
+
+		
+		wp_enqueue_script('book-bootstrap-script', BOOK_STORE_INC_URL . '/js/bootstrap.min.js');
 	}
 	
 	/**
@@ -42,6 +59,7 @@ class Book_Store_Scripts {
 		
 		//add admin scripts
 		add_action('admin_enqueue_scripts', array($this, 'book_store_admin_scripts'));
+		add_action('wp_enqueue_scripts', array($this, 'book_store_public_scripts'));
 	}
 }
 ?>
