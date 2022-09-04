@@ -5,19 +5,28 @@ jQuery( document ).ready(function() {
     var range = jQuery('#book_price');
     range.on('input', function(){
         jQuery('#selected_book_price').val(this.value);
+        jQuery('.price-indicator').text(this.value);
     }); 
 
     /* Custom ajax code to filter Book Records */
     jQuery('#book-search-form').on('submit', function(event) {
+        
         event.preventDefault();
-        var selected_product = jQuery(this).val();
-        var current_index    = jQuery(this).closest('#custom-select-ljus').find('#product-set-id').val();
+        var book_title = jQuery('#book_title').val();
+        var book_author = jQuery('#book_author').val();
+        var book_publisher = jQuery('#book_publisher').val();
+        var book_rating    = jQuery('#book_rating').val();
+        var book_pricing    = jQuery('#selected_book_price').val();
         jQuery.ajax({
           type : "POST",
           url : BookStorePublic.ajaxurl,
           data : {
             action: "book_search_filtering",
-            //product_id:selected_product
+            book_title:book_title,
+            book_author:book_author,
+            book_publisher:book_publisher,
+            book_rating:book_rating,
+            book_pricing:book_pricing
           },
           beforeSend: function() {
             jQuery("#overlay").fadeIn(300);
@@ -32,37 +41,4 @@ jQuery( document ).ready(function() {
           }
         });
     });
-
-
-    jQuery(document).on('click', '.book-store', function(e) {
-
-        alert("aaaa");
-        e.preventDefault();
-        
-        var selected_product = jQuery(this).val();
-        var current_index    = jQuery(this).closest('#custom-select-ljus').find('#product-set-id').val();
-        /*jQuery.ajax({
-          type : "POST",
-          url : LjusMannenPublic.ajaxurl,
-          data : {action: "ljus_mannen_get_variations_from_products",product_id:selected_product},
-          success: function(response) {
-            if(response.length != 0){
-  
-              jQuery('.product_variation_name').removeAttr("disabled");
-              jQuery('.product_variation_name').html();
-  
-              var newselect = jQuery(this).closest('.repeater-item-select-variation').attr('newselect');
-              jQuery('select[name="product_details_repeater['+current_index+'][product_variation_name]"]').html(response);
-        
-  
-            } else {
-  
-              jQuery('select[name="product_details_repeater['+current_index+'][product_variation_name]"]').empty();
-              jQuery('select[name="product_details_repeater['+current_index+'][product_variation_name]"]').attr("disabled", true);
-  
-            }
-          }
-        });*/
-      });
-
 });

@@ -68,7 +68,105 @@ class Book_Store_Model {
 
 	 public function book_search_filtering(){
 
-		echo "test";
+		$prefix = BOOK_STORE_PREFIX;
+		$meta_query_args = array();
+		$get_data_args = array(
+			'post_type'      => 'book_store_book',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'order' => 'ASC',
+		);
+
+		/* Custom code to search on basis of book title */
+		if( !empty( $_POST['book_title'] ) ) {
+			$get_data_args['s'] = $_POST['book_title']; 
+		}
+
+		/* Custom code to search on basis of rating */
+		if( !empty( $_POST['book_rating'] ) ) {
+			
+			$meta_query_args[] = array(
+				'key'     => $prefix . '_rating',
+				'value'   => $_POST['book_rating'],
+				'compare' => '='
+			  ); 
+		}
+
+		/* Custom code to search on basis of price */
+		if( !empty( $_POST['book_pricing'] ) ) {
+			$meta_query_args['relation'] = "AND";
+			$meta_query_args[] = array(
+				'key'     => $prefix . '_price',
+				'type'     => 'numeric',
+				'value'   => array(0,$_POST['book_pricing']),
+				'compare' => 'between'
+			  ); 
+		}
+
+
+		$get_data_args['meta_query'] = $meta_query_args;
+		$books_data = new WP_Query($get_data_args);
+		
+	
+		
+		 if ($books_data->have_posts()) : 
+			while ( $books_data->have_posts() ) : $books_data->the_post(); 
+
+			$book_store_custom_price = get_post_meta( get_the_ID(), $prefix . '_price', true );
+			$book_store_star_rating = get_post_meta( get_the_ID(), $prefix . '_rating', true );
+			$book_store_author_details = get_the_terms( get_the_ID(), 'author' );
+			if( !empty( $book_store_author_details ) && is_array( $book_store_author_details ) ){
+				$book_store_author_name = $book_store_author_details[0]->name;
+			}	
+
+			$book_store_publisher_details = get_the_terms( get_the_ID(), 'publisher' );
+			$book_store_publisher_name = '';
+			if( !empty( $book_store_publisher_details ) && is_array( $book_store_publisher_details ) ) {
+				if( count( $book_store_publisher_details ) == 1) {
+					$book_store_publisher_name = $book_store_publisher_details[0]->name;
+				} else {
+					$book_store_multiple_publisher_data = array();
+					foreach( $book_store_publisher_details as $key => $publisher_data ) {
+						$book_store_multiple_publisher_data[$key] = $publisher_data->name;
+					}
+					$book_store_publisher_name = implode(", ",$book_store_multiple_publisher_data);
+				}
+			}	
+
+		?>
+		<tr>
+			<th scope="row"><?php echo get_the_ID(); ?></th>
+			<td><a target="_blank" href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></td></a>
+			<td><?php echo $book_store_custom_price; ?></td>
+			<td><?php echo $book_store_author_name; ?></td>
+			<td><?php echo $book_store_publisher_name; ?></td>
+			<td>
+			<div class="star-rating">
+				<?php for( $i=0 ; $i < 5 ; $i++ ) { 
+						$star_class = '';
+						if( $i < ( $book_store_star_rating)  ) {
+							$star_class = 'dashicons-star-filled';
+						} else {
+							$star_class = 'dashicons-star-empty';
+						}
+					?>	
+					<span class="dashicons <?php echo $star_class; ?>"></span>
+				<?php } ?>	
+			  </div>
+			</td>	
+		</tr>
+
+		<?php 
+			endwhile; 
+			else:
+		?>
+		  	<tr>
+				<td colspan='6'><?php echo esc_html('No Posts found based on your criteria.','bkstore') ?></td>
+			</tr>
+
+		<?php	
+		endif;	
+			 
 		die();
 	 }
 
@@ -158,7 +256,8 @@ class Book_Store_Model {
 					<span class="font-weight-bold purple-text mr-2 mt-1">0</span>
 						<input type="range" class="form-range w-50" step="100" min="0" max="3000" id="book_price">
 						<input type="hidden" id="selected_book_price" value/>
-					<span class="font-weight-bold purple-text ml-2 mt-1">3000</span>		
+					<span class="font-weight-bold purple-text ml-2 mt-1">3000</span>
+					<b><span class="price-indicator"></span></b>		
 				</div>
 				<div class="col-12 text-center">
 					<button type="submit" class="btn btn-primary book-search"><?php echo esc_html('Search...','bkstore') ?></button>

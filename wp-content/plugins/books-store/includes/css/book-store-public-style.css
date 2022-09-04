@@ -5,6 +5,13 @@
     margin-right: auto !important;
 }
 
+
+/*Font size - price indicator*/
+.price-indicator{
+  font-size: 12px;
+}
+
+
 /* Loader Designing */
 #button{
     display:block;
