@@ -19,6 +19,10 @@ class Book_Store_Model {
 
 		add_shortcode( 'book-search-layout', array( $this, 'book_search_html' ) );
 
+		// Custom ajax search for Book Search filter link.
+		add_action('wp_ajax_nopriv_book_search_filtering', array($this, 'book_search_filtering'));
+	    add_action('wp_ajax_book_search_filtering', array($this, 'book_search_filtering'));
+
 	}
 		
 	/**
@@ -52,6 +56,23 @@ class Book_Store_Model {
 		$data = stripslashes_deep($data);
 		return $data;
 	 }
+
+	 /**
+	 * Book Store - Custom ajax filtering 
+	 * 
+	 * Custom code to implement book search filtering
+	 * 
+	 * @package Books Store
+	 * @since 1.0.0
+	 */
+
+	 public function book_search_filtering(){
+
+		echo "test";
+		die();
+	 }
+
+
 
 	/**
 	 * BootStrap Search - Shortcode 
@@ -90,7 +111,7 @@ class Book_Store_Model {
 
 	
 		?>
-			<form id="book-search-form" name="book-search-form" class="row g-3">
+			<form method="post" id="book-search-form" name="book-search-form" class="row g-3">
 				<h2 class="text-center"><?php echo esc_html('Book Search','bkstore') ?></h2>
 				<div class="col-md-6">
 					<label for="book_title" class="form-label"><?php echo esc_html('Book Name:','bkstore') ?></label>
@@ -141,6 +162,7 @@ class Book_Store_Model {
 				</div>
 				<div class="col-12 text-center">
 					<button type="submit" class="btn btn-primary book-search"><?php echo esc_html('Search...','bkstore') ?></button>
+					<div id="overlay"><div class="cv-spinner"><span class="spinner"></span></div></div>
 				</div>
 			</form>
 			<table style="width: 100%" class="table book-search-records" id="book-search-records">
@@ -201,11 +223,12 @@ class Book_Store_Model {
      					 </div>
 						</td>	
 					</tr>
-			</tbody>
+			
 			<?php 
 					endwhile; 
 				endif; 
 			?>
+			</tbody>
 			</table>
 			<nav class="pagination">
             <div class="pager">
