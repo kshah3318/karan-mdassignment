@@ -165,7 +165,7 @@ class Book_Store_Model {
 					<div id="overlay"><div class="cv-spinner"><span class="spinner"></span></div></div>
 				</div>
 			</form>
-			<table style="width: 100%" class="table book-search-records" id="book-search-records">
+			<table  class="table book-search-records" id="book-search-records">
 			<thead>
 				<tr>
 					<th scope="col"><?php echo esc_html('No','bkstore') ?></th>
