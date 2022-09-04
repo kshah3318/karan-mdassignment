@@ -1,0 +1,6 @@
+/* Bootstrap custom star Rating */
+.wp-container-7 > :where(:not(.alignleft):not(.alignright)) {
+    max-width: 900px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

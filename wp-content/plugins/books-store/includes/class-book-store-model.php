@@ -66,6 +66,7 @@ class Book_Store_Model {
 
 		ob_start();
 
+		$prefix = BOOK_STORE_PREFIX;	
 		$available_ratings = array(1,2,3,4,5);
 		$available_authors = get_terms( array(
 			'taxonomy' => 'author',
@@ -75,6 +76,15 @@ class Book_Store_Model {
 			'taxonomy' => 'publisher',
 			'hide_empty' => true,
 		) );
+
+		$get_data_args = array(
+			'post_type'      => 'book_store_book',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'order' => 'ASC',
+		);
+		$books_data = new WP_Query($get_data_args);
+
 	
 		?>
 			<form id="book-search-form" name="book-search-form" class="row g-3">
@@ -130,43 +140,69 @@ class Book_Store_Model {
 					<button type="submit" class="btn btn-primary book-search"><?php echo esc_html('Search...','bkstore') ?></button>
 				</div>
 			</form>
-			<table  class="table book-search-records" id="book-search-records">
+			<table style="width: 100%" class="table book-search-records" id="book-search-records">
 			<thead>
 				<tr>
-					<th scope="col">No</th>
-					<th scope="col">Book Name</th>
-					<th scope="col">Price</th>
-					<th scope="col">Author</th>
-					<th scope="col">Publisher</th>
-					<th scope="col">Rating</th>
+					<th scope="col"><?php echo esc_html('No','bkstore') ?></th>
+					<th scope="col"><?php echo esc_html('Book Name.','bkstore') ?></th>
+					<th scope="col"><?php echo esc_html('Price','bkstore') ?></th>
+					<th scope="col"><?php echo esc_html('Author','bkstore') ?></th>
+					<th scope="col"><?php echo esc_html('Publisher','bkstore') ?></th>
+					<th scope="col"><?php echo esc_html('Rating','bkstore') ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-				<th scope="row">1</th>
-				<td>Mark</td>
-				<td>Otto</td>
-				<td>@mdo</td>
-				<td>@mdo</td>
-				<td>@mdo</td>
-				</tr>
-				<tr>
-				<th scope="row">2</th>
-				<td>Jacob</td>
-				<td>Thornton</td>
-				<td>@fat</td>
-				<td>@fat</td>
-				<td>@fat</td>
-				</tr>
-				<tr>
-				<th scope="row">3</th>
-				<td>Jacob</td>
-				<td>Thornton</td>
-				<td>@fat</td>
-				<td>@fat</td>
-				<td>@fat</td>
-				</tr>
+				<?php if ($books_data->have_posts()) : 
+						while ( $books_data->have_posts() ) : $books_data->the_post(); 
+
+						$book_store_custom_price = get_post_meta( get_the_ID(), $prefix . '_price', true );
+						$book_store_star_rating = get_post_meta( get_the_ID(), $prefix . '_rating', true );
+						$book_store_author_details = get_the_terms( get_the_ID(), 'author' );
+						if( !empty( $book_store_author_details ) && is_array( $book_store_author_details ) ){
+							$book_store_author_name = $book_store_author_details[0]->name;
+						}	
+
+						$book_store_publisher_details = get_the_terms( get_the_ID(), 'publisher' );
+						$book_store_publisher_name = '';
+						if( !empty( $book_store_publisher_details ) && is_array( $book_store_publisher_details ) ) {
+							if( count( $book_store_publisher_details ) == 1) {
+								$book_store_publisher_name = $book_store_publisher_details[0]->name;
+							} else {
+								$book_store_multiple_publisher_data = array();
+								foreach( $book_store_publisher_details as $key => $publisher_data ) {
+									$book_store_multiple_publisher_data[$key] = $publisher_data->name;
+								}
+								$book_store_publisher_name = implode(", ",$book_store_multiple_publisher_data);
+							}
+						}	
+
+					?>
+					<tr>
+						<th scope="row"><?php echo get_the_ID(); ?></th>
+						<td><?php echo get_the_title(); ?></td>
+						<td><?php echo $book_store_custom_price; ?></td>
+						<td><?php echo $book_store_author_name; ?></td>
+						<td><?php echo $book_store_publisher_name; ?></td>
+						<td>
+						<div class="star-rating">
+							<?php for( $i=0 ; $i < 5 ; $i++ ) { 
+									$star_class = '';
+									if( $i < ( $book_store_star_rating)  ) {
+										$star_class = 'dashicons-star-filled';
+									} else {
+										$star_class = 'dashicons-star-empty';
+									}
+								?>	
+								<span class="dashicons <?php echo $star_class; ?>"></span>
+							<?php } ?>	
+     					 </div>
+						</td>	
+					</tr>
 			</tbody>
+			<?php 
+					endwhile; 
+				endif; 
+			?>
 			</table>
 		<?php
 	
