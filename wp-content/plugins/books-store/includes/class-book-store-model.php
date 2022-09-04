@@ -182,7 +182,7 @@ class Book_Store_Model {
 					?>
 					<tr>
 						<th scope="row"><?php echo get_the_ID(); ?></th>
-						<td><?php echo get_the_title(); ?></td>
+						<td><a target="_blank" href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></td></a>
 						<td><?php echo $book_store_custom_price; ?></td>
 						<td><?php echo $book_store_author_name; ?></td>
 						<td><?php echo $book_store_publisher_name; ?></td>
