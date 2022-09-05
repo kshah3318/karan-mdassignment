@@ -70,6 +70,7 @@ class Book_Store_Model {
 
 		$prefix = BOOK_STORE_PREFIX;
 		$meta_query_args = array();
+		$tax_query_args  = array();
 		$get_data_args = array(
 			'post_type'      => 'book_store_book',
 			'posts_per_page' => -1,
@@ -83,7 +84,7 @@ class Book_Store_Model {
 		}
 
 		/* Custom code to search on basis of rating */
-		if( !empty( $_POST['book_rating'] ) ) {
+		if( !empty( $_POST['book_rating'] ) && $_POST['book_rating'] != 'Choose…' ) {
 			
 			$meta_query_args[] = array(
 				'key'     => $prefix . '_rating',
@@ -103,12 +104,30 @@ class Book_Store_Model {
 			  ); 
 		}
 
+		if(!empty( $_POST['book_publisher'] ) && $_POST['book_publisher'] != 'Choose…' ) {
+
+			$tax_query_args[] = array(
+				'taxonomy'  => 'publisher',
+				'field'     => 'slug',
+				'terms'	 	=> array( $_POST['book_publisher'] ),
+			  );
+
+		}
+
+		if(!empty( $_POST['book_author'] ) && $_POST['book_author'] != 'Choose…' ) {
+
+			$tax_query_args[] = array(
+				'taxonomy'  => 'author',
+				'field'     => 'slug',
+				'terms'	 	=> array( $_POST['book_author'] ),
+			  );
+
+		}	
 
 		$get_data_args['meta_query'] = $meta_query_args;
+		$get_data_args['tax_query']  = $tax_query_args;
 		$books_data = new WP_Query($get_data_args);
-		
-	
-		
+
 		 if ($books_data->have_posts()) : 
 			while ( $books_data->have_posts() ) : $books_data->the_post(); 
 
@@ -221,7 +240,7 @@ class Book_Store_Model {
 						<option selected>Choose...</option>
 						<?php if( !empty( $available_authors ) && is_array( $available_authors ) ) { 
 							foreach( $available_authors as $author_key => $author ) { ?>
-								<option value="<?php echo $author->term_id;; ?>"><?php echo $author->name; ?></option>
+								<option value="<?php echo $author->slug; ?>"><?php echo $author->name; ?></option>
 						<?php } 
 						}	
 					?>	
@@ -233,7 +252,7 @@ class Book_Store_Model {
 						<option selected>Choose...</option>
 						<?php if( !empty( $available_publisher ) && is_array( $available_publisher ) ) { 
 							foreach( $available_publisher as $publisher_key => $publisher ) { ?>
-								<option value="<?php echo $publisher->term_id;; ?>"><?php echo $publisher->name; ?></option>
+								<option value="<?php echo $publisher->slug; ?>"><?php echo $publisher->name; ?></option>
 						<?php } 
 						}
 						?>
